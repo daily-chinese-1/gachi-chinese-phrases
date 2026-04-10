@@ -367,6 +367,28 @@ body {
 .scroll-top:hover { transform: scale(1.1); }
 .scroll-top.visible { display: flex; }
 
+/* ===== HEADER PANDA ===== */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-panda {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+
+/* ===== EMPTY PANDA ===== */
+.empty-state img {
+  width: 120px;
+  margin-bottom: 12px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (min-width: 768px) {
   .header { padding: 24px 24px 20px; }
@@ -381,9 +403,12 @@ body {
 
 <div class="header">
   <div class="header-top">
-    <div class="logo">
-      ガチ中国語単語500
-      <span>ネイティブが本当に使う実戦単語集</span>
+    <div class="logo-area">
+      <img src="images/panda-teach.jpg" alt="毎日中国語パンダ" class="header-panda">
+      <div class="logo">
+        ガチ中国語単語500
+        <span>ネイティブが本当に使う実戦単語集</span>
+      </div>
     </div>
     <div class="stats">
       <strong id="displayCount">0</strong>
@@ -526,7 +551,7 @@ function renderWords() {
   document.getElementById('displayCount').textContent = words.length;
 
   if (words.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>該当する単語が見つかりません</p></div>`;
+    list.innerHTML = `<div class="empty-state"><img src="images/panda-cry.png" alt="見つからない"><p>該当する単語が見つかりません</p></div>`;
     return;
   }
 
