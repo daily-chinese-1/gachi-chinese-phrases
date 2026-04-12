@@ -343,6 +343,38 @@ body {
 .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { font-size: 15px; }
 
+/* ===== AUDIO BUTTONS ===== */
+.audio-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--primary);
+  background: #fff;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.audio-btn:hover, .audio-btn.playing {
+  background: var(--primary);
+  color: #fff;
+}
+
+.audio-btn .icon {
+  font-size: 15px;
+}
+
 /* ===== SCROLL TOP ===== */
 .scroll-top {
   position: fixed;
@@ -574,6 +606,10 @@ function renderWords() {
         <div class="card-body">
           <div class="card-body-inner">
             <div class="genre-badge">${info.icon || ''} ${escapeHtml(w.genre)}</div>
+            <div class="audio-row">
+              <button class="audio-btn" onclick="event.stopPropagation(); playAudio(${w.num}, '単語', this)"><span class="icon">🔊</span> 単語</button>
+              <button class="audio-btn" onclick="event.stopPropagation(); playAudio(${w.num}, '例文', this)"><span class="icon">🔊</span> 例文</button>
+            </div>
             ${w.explanation ? `<div class="explanation">${escapeHtml(w.explanation)}</div>` : ''}
             ${w.exampleZh ? `
               <div class="example-block">
@@ -605,6 +641,44 @@ function toggleCard(card) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Audio
+let currentAudio = null;
+let currentBtn = null;
+
+function playAudio(num, type, btn) {
+  // Stop current if playing
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    if (currentBtn) currentBtn.classList.remove('playing');
+  }
+
+  // If clicking same button, just stop
+  if (currentBtn === btn) {
+    currentAudio = null;
+    currentBtn = null;
+    return;
+  }
+
+  const src = `audio/${num}${type}.m4a`;
+  const audio = new Audio(src);
+  currentAudio = audio;
+  currentBtn = btn;
+  btn.classList.add('playing');
+
+  audio.play().catch(() => {
+    btn.classList.remove('playing');
+    currentAudio = null;
+    currentBtn = null;
+  });
+
+  audio.addEventListener('ended', () => {
+    btn.classList.remove('playing');
+    currentAudio = null;
+    currentBtn = null;
+  });
 }
 
 // Search
