@@ -358,27 +358,27 @@ body {
 }
 
 .audio-btn-mini {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 16px;
   border: 1.5px solid var(--primary);
   background: #fff;
   color: var(--primary);
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  padding: 0;
+  font-family: inherit;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .audio-btn-mini:hover, .audio-btn-mini.playing {
   background: var(--primary);
-  filter: brightness(1.2);
-  transform: scale(1.1);
+  color: #fff;
 }
 
 /* ===== SCROLL TOP ===== */
@@ -605,7 +605,7 @@ function renderWords() {
           <div class="word-main">
             <div class="word-chinese-row">
               <div class="word-chinese">${escapeHtml(w.word)}</div>
-              <button class="audio-btn-mini" onclick="event.stopPropagation(); playAudio(${w.num}, '単語', this)" title="単語を再生">🔊</button>
+              <button class="audio-btn-mini" onclick="event.stopPropagation(); playAudio(${w.num}, '単語', this)">▶ 再生</button>
             </div>
             <div class="word-pinyin">${escapeHtml(w.pinyin)}</div>
             <div class="word-japanese">${escapeHtml(w.japanese)}</div>
@@ -620,7 +620,7 @@ function renderWords() {
               <div class="example-block">
                 <div class="example-label-row">
                   <div class="example-label">例文</div>
-                  <button class="audio-btn-mini" onclick="event.stopPropagation(); playAudio(${w.num}, '例文', this)" title="例文を再生">🔊</button>
+                  <button class="audio-btn-mini" onclick="event.stopPropagation(); playAudio(${w.num}, '例文', this)">▶ 再生</button>
                 </div>
                 <div class="example-zh">${escapeHtml(w.exampleZh)}</div>
                 ${w.exampleJa ? `<div class="example-ja">${escapeHtml(w.exampleJa)}</div>` : ''}
@@ -660,7 +660,7 @@ function playAudio(num, type, btn) {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
-    if (currentBtn) currentBtn.classList.remove('playing');
+    if (currentBtn) { currentBtn.classList.remove('playing'); currentBtn.innerHTML = '▶ 再生'; }
   }
 
   // If clicking same button, just stop
@@ -675,15 +675,16 @@ function playAudio(num, type, btn) {
   currentAudio = audio;
   currentBtn = btn;
   btn.classList.add('playing');
+  btn.innerHTML = '■ 停止';
 
   audio.play().catch(() => {
-    btn.classList.remove('playing');
+    btn.classList.remove('playing'); btn.innerHTML = '▶ 再生';
     currentAudio = null;
     currentBtn = null;
   });
 
   audio.addEventListener('ended', () => {
-    btn.classList.remove('playing');
+    btn.classList.remove('playing'); btn.innerHTML = '▶ 再生';
     currentAudio = null;
     currentBtn = null;
   });
